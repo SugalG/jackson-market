@@ -1,0 +1,87 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  name      String
+  email     String   @unique
+  password  String
+  role      Role     @default(CUSTOMER)
+  createdAt DateTime @default(now())
+
+  orders    Order[]
+  cartItems CartItem[]   // 🔥 Added back-relation for CartItem
+}
+
+enum Role {
+  ADMIN
+  CUSTOMER
+}
+
+model Category {
+  id       Int      @id @default(autoincrement())
+  name     String
+  slug     String   @unique
+  products Product[]
+}
+
+model Product {
+  id          Int      @id @default(autoincrement())
+  name        String
+  slug        String   @unique
+  price       Float
+  description String
+  images      String[]
+  stock       Int
+  createdAt   DateTime @default(now())
+  categoryId  Int
+  category    Category @relation(fields: [categoryId], references: [id])
+
+  OrderItem OrderItem[]
+  cartItems CartItem[]   // 🔥 Added back-relation for CartItem
+}
+
+model Order {
+  id        Int         @id @default(autoincrement())
+  userId    Int
+  total     Float
+  status    OrderStatus @default(PENDING)
+  address   String
+  createdAt DateTime    @default(now())
+
+  user   User       @relation(fields: [userId], references: [id])
+  items  OrderItem[]
+}
+
+model CartItem {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  productId Int
+  quantity  Int      @default(1)
+
+  user    User    @relation(fields: [userId], references: [id])
+  product Product @relation(fields: [productId], references: [id])
+}
+
+model OrderItem {
+  id        Int     @id @default(autoincrement())
+  productId Int
+  orderId   Int
+  quantity  Int
+  price     Float
+
+  product Product @relation(fields: [productId], references: [id])
+  order   Order   @relation(fields: [orderId], references: [id])
+}
+
+enum OrderStatus {
+  PENDING
+  PAID
+  DELIVERED
+}
