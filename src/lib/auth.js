@@ -27,12 +27,20 @@ export async function setUserCookie(token) {
     httpOnly: true,
     path: "/",
     maxAge: 60 * 60 * 24 * 7,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
   });
 }
 
 export async function clearUserCookie() {
   const store = await cookies();
-  store.delete("token");
+  store.set("token", "", {
+    httpOnly: true,
+    path: "/",
+    maxAge: 0,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
+  });
 }
 
 export async function getUser() {
@@ -51,12 +59,20 @@ export async function setAdminCookie(token) {
     httpOnly: true,
     path: "/",
     maxAge: 60 * 60 * 24 * 7,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
   });
 }
 
 export async function clearAdminCookie() {
   const store = await cookies();
-  store.delete("admin_token");
+  store.set("admin_token", "", {
+    httpOnly: true,
+    path: "/",
+    maxAge: 0,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
+  });
 }
 
 export async function getAdmin() {

@@ -1,16 +1,14 @@
-import { getAllProducts } from "@/lib/db";
+import { getAllProducts, getAllCategories } from "@/lib/db";
 
 export default async function HomePage() {
   const products = await getAllProducts();
+  const categories = await getAllCategories();   // ✅ FIX: add this
 
   return (
     <div className="space-y-12">
 
-      {/* -------------------------------------------------- */}
       {/* HERO SECTION */}
-      {/* -------------------------------------------------- */}
       <section className="bg-white rounded-3xl border border-green-100 shadow-md px-8 py-12 text-center">
-
         <h1 className="text-4xl font-bold text-[#1f5b3f] tracking-tight mb-3">
           Jackson Market
         </h1>
@@ -34,13 +32,31 @@ export default async function HomePage() {
             Login / Register
           </a>
         </div>
-
       </section>
 
+      {/* CATEGORY GRID */}
+      <section>
+        <h2 className="text-xl font-semibold text-[#1f5b3f] mb-5">
+          Shop by Category
+        </h2>
 
-      {/* -------------------------------------------------- */}
+        <div className="grid grid-cols-3 md:grid-cols-6 gap-4">
+          {categories.map((c) => (
+            <a
+              key={c.id}
+              href={`/products?category=${c.slug}`}
+              className="bg-white border rounded-xl shadow-sm p-4 text-center hover:shadow-md transition"
+            >
+              <div className="h-12 w-12 mx-auto bg-green-50 rounded-full flex items-center justify-center text-xl">
+                🛒
+              </div>
+              <p className="mt-2 text-sm font-medium text-gray-800">{c.name}</p>
+            </a>
+          ))}
+        </div>
+      </section>
+
       {/* FEATURED PRODUCTS */}
-      {/* -------------------------------------------------- */}
       <section>
         <h2 className="text-xl font-semibold text-[#1f5b3f] mb-5">
           Featured Products
@@ -52,7 +68,6 @@ export default async function HomePage() {
           </p>
         ) : (
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-
             {products.slice(0, 8).map((p) => (
               <a
                 key={p.id}
@@ -76,15 +91,11 @@ export default async function HomePage() {
                 </p>
               </a>
             ))}
-
           </div>
         )}
       </section>
 
-
-      {/* -------------------------------------------------- */}
-      {/* CTA STRIP */}
-      {/* -------------------------------------------------- */}
+      {/* CTA SECTION */}
       <section className="bg-gradient-to-r from-[#1f5b3f] to-[#17432c] text-white rounded-2xl p-8 text-center shadow-md">
         <h3 className="text-xl font-semibold">Cash on Delivery Available</h3>
         <p className="text-white/80 text-sm mt-1">
@@ -98,7 +109,6 @@ export default async function HomePage() {
           Shop Now
         </a>
       </section>
-
     </div>
   );
 }

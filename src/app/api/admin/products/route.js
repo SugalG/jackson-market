@@ -9,6 +9,9 @@ export async function GET() {
   }
 
   const products = await prisma.product.findMany({
+    where: {
+      isDeleted: false,   // 🔥 Hide deleted products from admin UI
+    },
     include: {
       category: true,
     },
