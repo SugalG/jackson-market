@@ -1,22 +1,32 @@
 import { NextResponse } from "next/server";
-import { writeFile } from "fs/promises";
-import path from "path";
+import cloudinary from "@/lib/cloudinary";
 
 export async function POST(req) {
-  const formData = await req.formData();
-  const file = formData.get("file");
+  try {
+    const formData = await req.formData();
+    const file = formData.get("file");
 
-  if (!file) {
-    return NextResponse.json({ error: "No file uploaded" }, { status: 400 });
+    if (!file) {
+      return NextResponse.json({ error: "No file uploaded" }, { status: 400 });
+    }
+
+    // Convert file to buffer
+    const bytes = await file.arrayBuffer();
+    const buffer = Buffer.from(bytes);
+
+    // Convert buffer → Base64 string
+    const base64 = `data:${file.type};base64,${buffer.toString("base64")}`;
+
+    // Upload to Cloudinary
+    const uploadResult = await cloudinary.uploader.upload(base64, {
+      folder: "jackson-market",
+    });
+
+    return NextResponse.json({
+      url: uploadResult.secure_url,
+    });
+  } catch (err) {
+    console.error("Cloudinary upload error:", err);
+    return NextResponse.json({ error: "Upload failed" }, { status: 500 });
   }
-
-  const buffer = Buffer.from(await file.arrayBuffer());
-  const filename = `${Date.now()}-${file.name}`;
-  const filepath = path.join(process.cwd(), "public", "uploads", filename);
-
-  await writeFile(filepath, buffer);
-
-  return NextResponse.json({
-    url: `/uploads/${filename}`,
-  });
 }
