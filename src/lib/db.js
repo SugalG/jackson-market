@@ -43,6 +43,7 @@ export async function getProductsByCategorySlug(slug) {
 // Fetch ALL categories (used in homepage & filters)
 export async function getAllCategories() {
   return await prisma.category.findMany({
+    where: { isDeleted: false },
     orderBy: { name: "asc" },
   });
 }

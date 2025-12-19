@@ -8,8 +8,10 @@ export async function PUT(req, { params }) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const { id } = await params;   // ✅ FIX
-  const categoryId = Number(id);
+  const categoryId = Number(params.id);
+  if (!categoryId) {
+    return NextResponse.json({ error: "Invalid category id" }, { status: 400 });
+  }
 
   const body = await req.json();
 
@@ -18,6 +20,7 @@ export async function PUT(req, { params }) {
     data: {
       name: body.name,
       slug: body.slug,
+      image: body.image ?? undefined, // ✅ NEW (keep old if not sent)
     },
   });
 

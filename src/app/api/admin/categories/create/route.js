@@ -2,17 +2,18 @@ import prisma from "@/lib/prisma";
 import { getAdmin } from "@/lib/auth";
 import { NextResponse } from "next/server";
 
-// Prevent Vercel from failing build by calling GET on this route
+
 export async function GET() {
-  return NextResponse.json({ message: "Category create endpoint" });
+  return NextResponse.json({ ok: true });
 }
 
 export async function POST(req) {
   const admin = await getAdmin();
-  if (!admin)
+  if (!admin) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
 
-  const { name, slug } = await req.json();
+  const { name, slug, image } = await req.json();
 
   if (!name || !slug) {
     return NextResponse.json(
@@ -21,9 +22,22 @@ export async function POST(req) {
     );
   }
 
-  const category = await prisma.category.create({
-    data: { name, slug },
-  });
+  try {
+    const category = await prisma.category.create({
+      data: {
+        name,
+        slug,
+        image: image || null, 
+      },
+    });
 
-  return NextResponse.json(category);
+    return NextResponse.json(category);
+  } catch (err) {
+    console.error("Create category error:", err);
+
+    return NextResponse.json(
+      { error: "Category already exists or invalid data" },
+      { status: 400 }
+    );
+  }
 }

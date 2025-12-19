@@ -1,11 +1,9 @@
-import { clearUserCookie } from "@/lib/auth";
+import { clearAllAuthCookies } from "@/lib/auth";
 import { NextResponse } from "next/server";
 
 export async function POST(req) {
-  await clearUserCookie();
+  await clearAllAuthCookies();
 
   const baseUrl = new URL(req.url).origin;
-
-  // Redirect customer to home after logout
-  return NextResponse.redirect(`${baseUrl}/`);
+  return NextResponse.redirect(`${baseUrl}/`, { status: 302 });
 }

@@ -47,30 +47,61 @@ export default async function AdminCategoriesPage() {
                     <table className="w-full text-left">
                         <thead>
                             <tr className="border-b">
+                                <th className="p-2">Image</th>
                                 <th className="p-2">Name</th>
                                 <th className="p-2">Slug</th>
+                                <th className="p-2">Status</th>
                                 <th className="p-2">Actions</th>
                             </tr>
                         </thead>
 
                         <tbody>
                             {categories.map((c) => (
-                                <tr key={c.id} className="border-b">
+                                <tr
+                                    key={c.id}
+                                    className={`border-b ${c.isDeleted ? "opacity-50" : ""}`}
+                                >
+                                    {/* Image */}
+                                    <td className="p-2">
+                                        <img
+                                            src={c.image || "/placeholder.png"}
+                                            alt={c.name}
+                                            className="h-10 w-10 rounded object-cover"
+                                        />
+                                    </td>
+
+                                    {/* Name */}
                                     <td className="p-2">{c.name}</td>
+
+                                    {/* Slug */}
                                     <td className="p-2 text-gray-600">{c.slug}</td>
+
+                                    {/* Status */}
+                                    <td className="p-2">
+                                        {c.isDeleted ? (
+                                            <span className="text-xs text-red-600">Deleted</span>
+                                        ) : (
+                                            <span className="text-xs text-green-600">Active</span>
+                                        )}
+                                    </td>
+
+                                    {/* Actions */}
                                     <td className="p-2 flex gap-3">
-                                        <Link
-                                            className="text-blue-600"
-                                            href={`/admin/categories/edit/${c.id}`}
-                                        >
-                                            Edit
-                                        </Link>
+                                        {!c.isDeleted && (
+                                            <>
+                                                <Link
+                                                    className="text-blue-600"
+                                                    href={`/admin/categories/edit/${c.id}`}
+                                                >
+                                                    Edit
+                                                </Link>
 
-                                        <DeleteCategoryButton id={c.id} />
-
-
+                                                <DeleteCategoryButton id={c.id} />
+                                            </>
+                                        )}
                                     </td>
                                 </tr>
+
                             ))}
                         </tbody>
                     </table>

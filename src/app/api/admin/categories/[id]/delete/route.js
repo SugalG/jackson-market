@@ -8,11 +8,21 @@ export async function DELETE(req, { params }) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const { id } = await params;   // ✅ FIX
-  const categoryId = Number(id);
+  const categoryId = Number(params.id);
 
-  await prisma.category.delete({
+  if (!categoryId) {
+    return NextResponse.json(
+      { error: "Invalid category id" },
+      { status: 400 }
+    );
+  }
+
+  
+  await prisma.category.update({
     where: { id: categoryId },
+    data: {
+      isDeleted: true,
+    },
   });
 
   return NextResponse.json({ success: true });

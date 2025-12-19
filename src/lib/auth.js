@@ -13,7 +13,7 @@ export function createToken(payload) {
 export function verifyToken(token) {
   try {
     return jwt.verify(token, JWT_SECRET);
-  } catch (err) {
+  } catch {
     return null;
   }
 }
@@ -22,7 +22,7 @@ export function verifyToken(token) {
 // USER COOKIE
 // -------------------------
 export async function setUserCookie(token) {
-  const store = await cookies();
+  const store = cookies();
   store.set("token", token, {
     httpOnly: true,
     path: "/",
@@ -32,29 +32,11 @@ export async function setUserCookie(token) {
   });
 }
 
-export async function clearUserCookie() {
-  const store = await cookies();
-  store.set("token", "", {
-    httpOnly: true,
-    path: "/",
-    maxAge: 0,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "lax",
-  });
-}
-
-export async function getUser() {
-  const store = await cookies();
-  const token = store.get("token")?.value;
-  if (!token) return null;
-  return verifyToken(token);
-}
-
 // -------------------------
 // ADMIN COOKIE
 // -------------------------
 export async function setAdminCookie(token) {
-  const store = await cookies();
+  const store = cookies();
   store.set("admin_token", token, {
     httpOnly: true,
     path: "/",
@@ -64,8 +46,37 @@ export async function setAdminCookie(token) {
   });
 }
 
-export async function clearAdminCookie() {
-  const store = await cookies();
+// -------------------------
+// GETTERS
+// -------------------------
+export async function getUser() {
+  const store = cookies();
+  const token = store.get("token")?.value;
+  if (!token) return null;
+  return verifyToken(token);
+}
+
+export async function getAdmin() {
+  const store = cookies();
+  const token = store.get("admin_token")?.value;
+  if (!token) return null;
+  return verifyToken(token);
+}
+
+// -------------------------
+// 🔥 SINGLE SOURCE OF TRUTH FOR LOGOUT
+// -------------------------
+export async function clearAllAuthCookies() {
+  const store = cookies();
+
+  store.set("token", "", {
+    httpOnly: true,
+    path: "/",
+    maxAge: 0,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
+  });
+
   store.set("admin_token", "", {
     httpOnly: true,
     path: "/",
@@ -73,11 +84,4 @@ export async function clearAdminCookie() {
     secure: process.env.NODE_ENV === "production",
     sameSite: "lax",
   });
-}
-
-export async function getAdmin() {
-  const store = await cookies();
-  const token = store.get("admin_token")?.value;
-  if (!token) return null;
-  return verifyToken(token);
 }

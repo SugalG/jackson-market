@@ -19,11 +19,15 @@ model User {
 }
 
 model Category {
-  id       Int       @id @default(autoincrement())
-  name     String
-  slug     String    @unique
-  products Product[]
+  id        Int       @id @default(autoincrement())
+  name      String
+  slug      String    @unique
+  image     String?
+  isDeleted Boolean   @default(false)
+
+  products  Product[]
 }
+
 
 model Product {
   id          Int         @id @default(autoincrement())

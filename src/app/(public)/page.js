@@ -47,9 +47,14 @@ export default async function HomePage() {
               href={`/products?category=${c.slug}`}
               className="bg-white border rounded-xl shadow-sm p-4 text-center hover:shadow-md transition"
             >
-              <div className="h-12 w-12 mx-auto bg-green-50 rounded-full flex items-center justify-center text-xl">
-                🛒
+              <div className="h-14 w-14 mx-auto rounded-full overflow-hidden border bg-white">
+                <img
+                  src={c.image || "/placeholder.png"}
+                  alt={c.name}
+                  className="w-full h-full object-cover"
+                />
               </div>
+
               <p className="mt-2 text-sm font-medium text-gray-800">{c.name}</p>
             </a>
           ))}
