@@ -10,11 +10,8 @@ export default function AdminOrdersPage() {
   async function loadOrders() {
     setLoading(true);
 
-    const base =
-      process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
-
-    const res = await fetch(`${base}/api/admin/orders`, {
-      credentials: "include", // ✅ sends admin_token automatically
+    const res = await fetch("/api/admin/orders", {
+      credentials: "include", // ✅ sends admin_token correctly
     });
 
     if (res.ok) {

@@ -1,31 +1,20 @@
 import Link from "next/link";
-import { cookies } from "next/headers";
+import prisma from "@/lib/prisma";
+import { getAdmin } from "@/lib/auth";
 import DeleteCategoryButton from "@/components/admin/DeleteCategoryButton";
-
-async function getCategories() {
-    const cookieStore = await cookies();
-    const adminToken = cookieStore.get("admin_token")?.value;
-
-    const res = await fetch(
-        `${process.env.NEXT_PUBLIC_BASE_URL}/api/admin/categories`,
-        {
-            cache: "no-store",
-            headers: adminToken
-                ? { Cookie: `admin_token=${adminToken}` }
-                : {},
-        }
-    );
-
-    if (!res.ok) {
-        console.error("Failed to load categories");
-        return [];
-    }
-
-    return res.json();
-}
+import { redirect } from "next/navigation";
 
 export default async function AdminCategoriesPage() {
-    const categories = await getCategories();
+    const admin = await getAdmin();
+
+    // Extra safety (middleware already protects, but this avoids blank page)
+    if (!admin) {
+        redirect("/admin-login");
+    }
+
+    const categories = await prisma.category.findMany({
+        orderBy: { name: "asc" },
+    });
 
     return (
         <div className="space-y-6">
@@ -61,7 +50,6 @@ export default async function AdminCategoriesPage() {
                                     key={c.id}
                                     className={`border-b ${c.isDeleted ? "opacity-50" : ""}`}
                                 >
-                                    {/* Image */}
                                     <td className="p-2">
                                         <img
                                             src={c.image || "/placeholder.png"}
@@ -70,13 +58,9 @@ export default async function AdminCategoriesPage() {
                                         />
                                     </td>
 
-                                    {/* Name */}
                                     <td className="p-2">{c.name}</td>
-
-                                    {/* Slug */}
                                     <td className="p-2 text-gray-600">{c.slug}</td>
 
-                                    {/* Status */}
                                     <td className="p-2">
                                         {c.isDeleted ? (
                                             <span className="text-xs text-red-600">Deleted</span>
@@ -85,7 +69,6 @@ export default async function AdminCategoriesPage() {
                                         )}
                                     </td>
 
-                                    {/* Actions */}
                                     <td className="p-2 flex gap-3">
                                         {!c.isDeleted && (
                                             <>
@@ -101,7 +84,6 @@ export default async function AdminCategoriesPage() {
                                         )}
                                     </td>
                                 </tr>
-
                             ))}
                         </tbody>
                     </table>
