@@ -1,10 +1,9 @@
 "use client";
 
-import { usePathname } from "next/navigation";
+import { ShoppingCart, Menu, X } from "lucide-react";
+import { useEffect, useState } from "react";
 
 export default function Navbar({ user }) {
-  const pathname = usePathname();
-
   const links = [
     { href: "/", label: "Home" },
     { href: "/products", label: "Products" },
@@ -12,78 +11,298 @@ export default function Navbar({ user }) {
     { href: "/orders", label: "Orders" },
   ];
 
+  const [cartCount, setCartCount] = useState(0);
+  const [mobileOpen, setMobileOpen] = useState(false);
+
+  // 🔹 Fetch cart count
+  useEffect(() => {
+    async function fetchCartCount() {
+      try {
+        const res = await fetch("/api/cart", {
+          credentials: "include",
+        });
+
+        if (!res.ok) {
+          setCartCount(0);
+          return;
+        }
+
+        const data = await res.json();
+
+        const count = data.reduce((sum, item) => sum + item.quantity, 0);
+        setCartCount(count);
+      } catch {
+        setCartCount(0);
+      }
+    }
+
+    fetchCartCount();
+  }, []);
+
+  // ✅ Close mobile menu on resize to desktop
+  useEffect(() => {
+    function onResize() {
+      if (window.innerWidth >= 768) setMobileOpen(false); // md breakpoint
+    }
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
+  }, []);
+
   return (
-    <header className="bg-[#1f5b3f] text-[#f4f1e8] h-16 flex items-center shadow-sm">
-      <div className="mx-auto w-full max-w-6xl flex items-center justify-between px-4">
+    <header className="absolute top-0 left-0 w-full z-50 font-quicksand">
+      <div className="w-full px-4 sm:px-6 lg:px-12 pt-6">
+        <div className="mx-auto max-w-7xl flex items-center justify-between gap-4">
+          {/* LOGO */}
+          <a
+            href="/"
+            className="
+              flex items-center gap-4
+              px-5 sm:px-6 py-4
+              rounded-full
+              border border-white/30
+              text-white
+              hover:border-white/60
+              transition
+              backdrop-blur
+            "
+          >
+            <img
+              src="/logo.svg"
+              className="h-10 w-10 sm:h-12 sm:w-12 object-contain"
+              alt="Jackson Market"
+            />
+            <span className="font-extrabold text-base sm:text-lg tracking-tight">
+              Jackson Market
+            </span>
+          </a>
 
-        {/* Logo */}
-        <a href="/" className="flex items-center gap-2">
-          <img
-            src="/logo.png"
-            className="h-16 w-24 object-contain"
-            alt="Jackson Market"
-          />
-        </a>
-
-        {/* Links */}
-        <nav className="flex items-center gap-2 text-sm">
-
-          {links.map((link) => {
-            const active =
-              link.href === "/"
-                ? pathname === "/"
-                : pathname.startsWith(link.href);
-
-            return (
+          {/* CENTER NAV (DESKTOP) */}
+          <nav
+            className="
+              hidden md:flex items-center gap-2
+              px-8 py-4
+              rounded-full
+              border border-white/30
+              backdrop-blur
+            "
+          >
+            {links.map((link) => (
               <a
                 key={link.href}
                 href={link.href}
-                className={`px-3 py-1.5 rounded-full transition ${
-                  active
-                    ? "bg-[#f4f1e8] text-[#1f5b3f]"
-                    : "hover:bg-[#234e35]"
-                }`}
+                className="
+                  px-5 py-3 rounded-full
+                  text-base font-semibold
+                  text-white/85
+                  hover:text-white
+                  transition
+                "
               >
                 {link.label}
               </a>
-            );
-          })}
+            ))}
+          </nav>
 
-          {/* If ADMIN → show Admin Panel */}
-          {user?.role === "ADMIN" && (
+          {/* RIGHT SIDE */}
+          <div className="flex items-center gap-3 sm:gap-4">
+            {/* 🛒 CART (ICON + COUNT) */}
             <a
-              href="/admin"
-              className="px-4 py-1.5 rounded-full bg-[#f4f1e8] text-[#1f5b3f] font-medium hover:bg-white transition"
+              href="/cart"
+              className="
+                relative h-14 w-14
+                rounded-full
+                border border-white/30
+                flex items-center justify-center
+                hover:border-white/60
+                transition
+                backdrop-blur
+              "
+              aria-label="Cart"
             >
-              Admin
+              <ShoppingCart className="h-6 w-6 text-white" />
+
+              {cartCount > 0 && (
+                <span
+                  className="
+                    absolute -top-1 -right-1
+                    h-6 min-w-[24px]
+                    px-1
+                    rounded-full
+                    bg-[#39d98a]
+                    text-[#0b2b1b]
+                    text-xs
+                    font-extrabold
+                    flex items-center justify-center
+                  "
+                >
+                  {cartCount}
+                </span>
+              )}
             </a>
-          )}
 
-          {/* Login / Logout */}
-          {user ? (
-            <form
-              action={
-                user.role === "ADMIN"
-                  ? "/api/auth/admin-logout"
-                  : "/api/auth/logout"
-              }
-              method="POST"
+            {/* SUPPORT + LOGIN (DESKTOP) */}
+            <div
+              className="
+                hidden md:flex items-center gap-5
+                px-6 py-4
+                rounded-full
+                border border-white/30
+                backdrop-blur
+              "
             >
-              <button className="border border-[#f4f1e8] rounded-full px-4 py-1.5 hover:bg-[#f4f1e8] hover:text-[#1f5b3f]">
-                Logout
-              </button>
-            </form>
-          ) : (
-            <a
-              href="/login"
-              className="border border-[#f4f1e8] rounded-full px-4 py-1.5 hover:bg-[#f4f1e8] hover:text-[#1f5b3f]"
+              <div className="hidden lg:block leading-tight">
+                <div className="text-sm text-white/70 font-medium">
+                  Call support 24/7
+                </div>
+                <div className="text-[#39d98a] font-extrabold text-base">
+                  +1 (444) 075 8494
+                </div>
+              </div>
+
+              {user ? (
+                <form
+                  action={
+                    user.role === "ADMIN"
+                      ? "/api/auth/admin-logout"
+                      : "/api/auth/logout"
+                  }
+                  method="POST"
+                >
+                  <button className="text-base font-semibold text-white hover:text-[#39d98a] transition">
+                    Logout
+                  </button>
+                </form>
+              ) : (
+                <a
+                  href="/login"
+                  className="text-base font-semibold text-white hover:text-[#39d98a] transition"
+                >
+                  Login
+                </a>
+              )}
+            </div>
+
+            {/* ✅ MOBILE TOGGLE BUTTON */}
+            <button
+              type="button"
+              onClick={() => setMobileOpen((v) => !v)}
+              className="
+                md:hidden
+                h-14 w-14
+                rounded-full
+                border border-white/30
+                flex items-center justify-center
+                hover:border-white/60
+                transition
+                backdrop-blur
+              "
+              aria-label="Toggle menu"
+              aria-expanded={mobileOpen}
             >
-              Login
-            </a>
-          )}
+              {mobileOpen ? (
+                <X className="h-6 w-6 text-white" />
+              ) : (
+                <Menu className="h-6 w-6 text-white" />
+              )}
+            </button>
+          </div>
+        </div>
 
-        </nav>
+        {/* ✅ MOBILE MENU DROPDOWN */}
+        {mobileOpen && (
+          <div className="mx-auto max-w-7xl mt-4 md:hidden">
+            <div
+              className="
+                rounded-3xl
+                border border-white/25
+                bg-white/10
+                backdrop-blur
+                overflow-hidden
+              "
+            >
+              {/* LINKS */}
+              <div className="p-3">
+                {links.map((link) => (
+                  <a
+                    key={link.href}
+                    href={link.href}
+                    onClick={() => setMobileOpen(false)}
+                    className="
+                      block w-full
+                      px-5 py-4
+                      rounded-2xl
+                      text-white/90
+                      font-semibold
+                      hover:bg-white/10
+                      transition
+                    "
+                  >
+                    {link.label}
+                  </a>
+                ))}
+              </div>
 
+              {/* SUPPORT */}
+              <div className="px-6 pb-5">
+                <div className="text-sm text-white/70 font-medium">
+                  Call support 24/7
+                </div>
+                <div className="text-[#39d98a] font-extrabold text-base">
+                  +1 (444) 075 8494
+                </div>
+              </div>
+
+              {/* LOGIN/LOGOUT */}
+              <div className="px-6 pb-6">
+                {user ? (
+                  <form
+                    action={
+                      user.role === "ADMIN"
+                        ? "/api/auth/admin-logout"
+                        : "/api/auth/logout"
+                    }
+                    method="POST"
+                    onSubmit={() => setMobileOpen(false)}
+                  >
+                    <button
+                      className="
+                        w-full
+                        px-6 py-4
+                        rounded-2xl
+                        border border-white/25
+                        text-white font-semibold
+                        hover:border-white/60
+                        hover:text-[#39d98a]
+                        transition
+                        backdrop-blur
+                      "
+                    >
+                      Logout
+                    </button>
+                  </form>
+                ) : (
+                  <a
+                    href="/login"
+                    onClick={() => setMobileOpen(false)}
+                    className="
+                      block text-center
+                      px-6 py-4
+                      rounded-2xl
+                      border border-white/25
+                      text-white font-semibold
+                      hover:border-white/60
+                      hover:text-[#39d98a]
+                      transition
+                      backdrop-blur
+                    "
+                  >
+                    Login
+                  </a>
+                )}
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </header>
   );

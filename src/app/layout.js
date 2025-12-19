@@ -14,9 +14,9 @@ export default async function RootLayout({ children }) {
 
   return (
     <html lang="en">
-      <body className="bg-[#f4f1e8] min-h-screen flex flex-col">
+      <body className="bg-[#eff5ee] min-h-screen flex flex-col">
         <Navbar user={user} />
-        <main className="flex-1 max-w-5xl mx-auto w-full px-4 py-6">
+        <main className="flex-1 mx-auto w-full ">
           {children}
         </main>
         <Footer />

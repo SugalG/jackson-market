@@ -1,40 +1,99 @@
+import PageBanner from "@/app/(public)/PageBanner";
+
 export default function AdminDashboard() {
   return (
-    <div className="space-y-8">
-      <h1 className="text-2xl font-semibold">Admin Dashboard</h1>
+    <div>
+      {/* ✅ PAGE BANNER */}
+      <PageBanner
+        title="Admin Dashboard"
+        breadcrumbBase="Admin"
+        breadcrumbCurrent="Dashboard"
+      />
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-        
-        <a
-          href="/admin/products"
-          className="p-6 bg-white shadow border rounded-xl hover:shadow-lg transition block"
-        >
-          <h2 className="font-semibold text-lg">Products</h2>
-          <p className="text-sm text-gray-600 mt-1">
-            Manage inventory, prices & images
-          </p>
-        </a>
+      {/* ✅ CONTENT */}
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-12 py-10 space-y-8">
 
-        <a
-          href="/admin/categories"
-          className="p-6 bg-white shadow border rounded-xl hover:shadow-lg transition block"
-        >
-          <h2 className="font-semibold text-lg">Categories</h2>
-          <p className="text-sm text-gray-600 mt-1">
-            Organize products into sections
-          </p>
-        </a>
+        {/* TITLE */}
+        <h1 className="font-quicksand text-2xl md:text-3xl font-extrabold text-[#24443e]">
+          Dashboard Overview
+        </h1>
 
-        <a
-          href="/admin/orders"
-          className="p-6 bg-white shadow border rounded-xl hover:shadow-lg transition block"
-        >
-          <h2 className="font-semibold text-lg">Orders</h2>
-          <p className="text-sm text-gray-600 mt-1">
-            View, update & complete orders
-          </p>
-        </a>
+        {/* CARDS */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
 
+          {/* PRODUCTS */}
+          <a
+            href="/admin/products"
+            className="
+              group
+              p-6
+              bg-white
+              border border-black/5
+              rounded-3xl
+              shadow-sm
+              hover:shadow-md
+              transition
+              block
+            "
+          >
+            <h2 className="font-quicksand font-semibold text-lg text-[#24443e] group-hover:text-[#1f5b3f] transition">
+              Products
+            </h2>
+
+            <p className="font-quicksand text-sm text-gray-600 mt-2 leading-relaxed">
+              Manage inventory, pricing, images, and availability.
+            </p>
+          </a>
+
+          {/* CATEGORIES */}
+          <a
+            href="/admin/categories"
+            className="
+              group
+              p-6
+              bg-white
+              border border-black/5
+              rounded-3xl
+              shadow-sm
+              hover:shadow-md
+              transition
+              block
+            "
+          >
+            <h2 className="font-quicksand font-semibold text-lg text-[#24443e] group-hover:text-[#1f5b3f] transition">
+              Categories
+            </h2>
+
+            <p className="font-quicksand text-sm text-gray-600 mt-2 leading-relaxed">
+              Organize and manage product categories.
+            </p>
+          </a>
+
+          {/* ORDERS */}
+          <a
+            href="/admin/orders"
+            className="
+              group
+              p-6
+              bg-white
+              border border-black/5
+              rounded-3xl
+              shadow-sm
+              hover:shadow-md
+              transition
+              block
+            "
+          >
+            <h2 className="font-quicksand font-semibold text-lg text-[#24443e] group-hover:text-[#1f5b3f] transition">
+              Orders
+            </h2>
+
+            <p className="font-quicksand text-sm text-gray-600 mt-2 leading-relaxed">
+              View, update, and complete customer orders.
+            </p>
+          </a>
+
+        </div>
       </div>
     </div>
   );

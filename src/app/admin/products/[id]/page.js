@@ -18,7 +18,7 @@ export default async function EditProductPage(props) {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-semibold">Edit Product</h1>
+      
       <EditProductForm product={product} categories={categories} />
     </div>
   );

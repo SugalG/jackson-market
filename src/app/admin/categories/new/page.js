@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import PageBanner from "@/app/(public)/PageBanner";
 
 export default function AddCategoryPage() {
   const [name, setName] = useState("");
@@ -25,7 +26,7 @@ export default function AddCategoryPage() {
 
     let imageURL = null;
 
-    // ✅ 1. Upload image if selected
+    // ✅ Upload image if selected
     if (image) {
       const fd = new FormData();
       fd.append("file", image);
@@ -39,14 +40,13 @@ export default function AddCategoryPage() {
       imageURL = uploaded.url;
     }
 
-    // ✅ 2. Send image URL to API
     const res = await fetch("/api/admin/categories/create", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         name,
         slug,
-        image: imageURL, // 🔥 THIS WAS MISSING
+        image: imageURL,
       }),
     });
 
@@ -61,63 +61,124 @@ export default function AddCategoryPage() {
 
   return (
     <div>
-      <h1 className="text-2xl font-semibold mb-6">Add Category</h1>
+      {/* ✅ PAGE BANNER */}
+      <PageBanner
+        title="Add Category"
+        breadcrumbBase="Admin"
+        breadcrumbCurrent="Add Category"
+      />
 
-      <form
-        onSubmit={handleSubmit}
-        className="space-y-5 bg-white p-6 rounded-xl shadow"
-      >
-        {/* NAME */}
-        <div>
-          <label className="font-medium">Name</label>
-          <input
-            className="w-full mt-1 border p-2 rounded"
-            value={name}
-            onChange={(e) => {
-              setName(e.target.value);
-              generateSlug(e.target.value);
-            }}
-            required
-          />
-        </div>
+      {/* ✅ CONTENT */}
+      <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-12 py-10">
+        <h1 className="font-quicksand text-2xl md:text-3xl font-extrabold text-[#24443e] mb-6">
+          Add New Category
+        </h1>
 
-        {/* SLUG */}
-        <div>
-          <label className="font-medium">Slug</label>
-          <input
-            className="w-full mt-1 border p-2 rounded"
-            value={slug}
-            onChange={(e) => setSlug(e.target.value)}
-            required
-          />
-        </div>
-
-        {/* IMAGE */}
-        <div>
-          <label className="font-medium">Category Image</label>
-          <input
-            type="file"
-            accept="image/*"
-            className="mt-2"
-            onChange={(e) => {
-              const file = e.target.files[0];
-              setImage(file);
-              setPreview(URL.createObjectURL(file));
-            }}
-          />
-
-          {preview && (
-            <img
-              src={preview}
-              className="mt-3 h-24 w-24 object-cover rounded-lg"
+        <form
+          onSubmit={handleSubmit}
+          className="
+            space-y-6
+            bg-white
+            rounded-3xl
+            border border-black/5
+            shadow-sm
+            p-6
+          "
+        >
+          {/* NAME */}
+          <div>
+            <label className="font-quicksand font-semibold text-sm text-[#24443e]">
+              Category Name
+            </label>
+            <input
+              className="w-full mt-2 border rounded-xl p-3 font-quicksand"
+              value={name}
+              onChange={(e) => {
+                setName(e.target.value);
+                generateSlug(e.target.value);
+              }}
+              required
             />
-          )}
-        </div>
+          </div>
 
-        <button className="px-6 py-2 bg-[#1f5b3f] text-white rounded-lg">
-          Save Category
-        </button>
-      </form>
+          {/* SLUG */}
+          <div>
+            <label className="font-quicksand font-semibold text-sm text-[#24443e]">
+              Slug
+            </label>
+            <input
+              className="w-full mt-2 border rounded-xl p-3 font-quicksand"
+              value={slug}
+              onChange={(e) => setSlug(e.target.value)}
+              required
+            />
+          </div>
+
+          {/* IMAGE */}
+          <div>
+            <label className="font-quicksand font-semibold text-sm text-[#24443e]">
+              Category Image
+            </label>
+
+            <input
+              type="file"
+              accept="image/*"
+              className="block mt-3 font-quicksand text-sm"
+              onChange={(e) => {
+                const file = e.target.files[0];
+                setImage(file);
+                setPreview(URL.createObjectURL(file));
+              }}
+            />
+
+            {preview && (
+              <div className="mt-4">
+                <img
+                  src={preview}
+                  alt="Preview"
+                  className="h-24 w-24 object-cover rounded-xl border"
+                />
+              </div>
+            )}
+          </div>
+
+          {/* ACTIONS */}
+          <div className="flex gap-4 pt-4">
+            <button
+              type="submit"
+              className="
+                px-8 py-3
+                rounded-full
+                bg-[#1f5b3f]
+                text-white
+                font-quicksand
+                font-bold
+                hover:bg-[#234e35]
+                transition
+              "
+            >
+              Save Category
+            </button>
+
+            <button
+              type="button"
+              onClick={() => router.push("/admin/categories")}
+              className="
+                px-8 py-3
+                rounded-full
+                border
+                font-quicksand
+                font-semibold
+                text-[#24443e]
+                hover:bg-[#eff5ee]
+                transition
+              "
+            >
+              Cancel
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
   );
 }

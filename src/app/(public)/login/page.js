@@ -1,5 +1,6 @@
 "use client";
 
+import PageBanner from "../PageBanner";
 import { useState } from "react";
 import Link from "next/link";
 
@@ -25,40 +26,59 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="p-6 max-w-md mx-auto bg-white rounded-xl shadow">
-      <h1 className="text-2xl mb-4 font-semibold">Login</h1>
+    <div className="font-quicksand">
+      {/* ✅ PAGE BANNER */}
+      <PageBanner
+        title="Login"
+        breadcrumbBase="Home"
+        breadcrumbCurrent="Login"
+      />
 
-      {error && <div className="text-red-500 text-sm mb-2">{error}</div>}
-
-      <form className="flex flex-col gap-3" onSubmit={submit}>
-        <input
-          className="border p-2 rounded"
-          placeholder="Email"
-          type="email"
-          required
-          onChange={(e) => setForm({ ...form, email: e.target.value })}
-        />
-
-        <input
-          className="border p-2 rounded"
-          placeholder="Password"
-          type="password"
-          required
-          onChange={(e) => setForm({ ...form, password: e.target.value })}
-        />
-
-        <button className="bg-[#1f5b3f] text-white p-2 rounded hover:bg-[#234e35]">
+      {/* ✅ LOGIN FORM */}
+      <div className="p-6 max-w-md mx-auto bg-white rounded-xl shadow mt-10">
+        <h1 className="text-2xl mb-4 font-extrabold text-[#1f5b3f]">
           Login
-        </button>
-      </form>
+        </h1>
 
-      {/* 🔹 Register link */}
-      <p className="text-sm text-gray-600 mt-4 text-center">
-        Don’t have an account?{" "}
-        <Link href="/register" className="text-[#1f5b3f] font-medium hover:underline">
-          Register
-        </Link>
-      </p>
+        {error && (
+          <div className="text-red-500 text-sm mb-2">{error}</div>
+        )}
+
+        <form className="flex flex-col gap-3" onSubmit={submit}>
+          <input
+            className="border p-2 rounded font-quicksand"
+            placeholder="Email"
+            type="email"
+            required
+            onChange={(e) => setForm({ ...form, email: e.target.value })}
+          />
+
+          <input
+            className="border p-2 rounded font-quicksand"
+            placeholder="Password"
+            type="password"
+            required
+            onChange={(e) =>
+              setForm({ ...form, password: e.target.value })
+            }
+          />
+
+          <button className="bg-[#1f5b3f] text-white p-2 rounded font-bold hover:bg-[#234e35] transition">
+            Login
+          </button>
+        </form>
+
+        {/* 🔹 Register link */}
+        <p className="text-sm text-gray-600 mt-4 text-center">
+          Don’t have an account?{" "}
+          <Link
+            href="/register"
+            className="text-[#1f5b3f] font-semibold hover:underline"
+          >
+            Register
+          </Link>
+        </p>
+      </div>
     </div>
   );
 }
