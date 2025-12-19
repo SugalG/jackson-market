@@ -6,20 +6,18 @@ import OrderDetails from "./order-details";
 
 export default function AdminOrderPage(props) {
   const router = useRouter();
-
-  // 🔥 FIX: unwrap params (Next.js 15)
   const [id, setId] = useState(null);
+  const [order, setOrder] = useState(null);
+  const [loading, setLoading] = useState(true);
 
+  
   useEffect(() => {
     async function unwrap() {
-      const p = await props.params; // <-- unwrap the promise
+      const p = await props.params;
       setId(p.id);
     }
     unwrap();
   }, [props.params]);
-
-  const [order, setOrder] = useState(null);
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (!id) return;
@@ -27,17 +25,14 @@ export default function AdminOrderPage(props) {
     async function loadOrder() {
       setLoading(true);
 
-      const base =
-        process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
-
-      const res = await fetch(`${base}/api/admin/orders/${id}`, {
-        credentials: "include",
+      const res = await fetch(`/api/admin/orders/${id}`, {
+        credentials: "include", 
       });
 
       if (res.ok) {
         setOrder(await res.json());
       } else {
-        console.log("Error loading order:", await res.text());
+        console.error("Error loading order:", await res.text());
         setOrder(null);
       }
 
