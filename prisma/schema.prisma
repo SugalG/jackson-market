@@ -19,14 +19,21 @@ model User {
 }
 
 model Category {
-  id        Int       @id @default(autoincrement())
+  id        Int        @id @default(autoincrement())
   name      String
-  slug      String    @unique
+  slug      String     @unique
   image     String?
-  isDeleted Boolean   @default(false)
+  isDeleted Boolean    @default(false)
+
+  // Self relation
+  parentId  Int?
+  parent    Category?  @relation("CategoryToSubcategories", fields: [parentId], references: [id])
+  children  Category[] @relation("CategoryToSubcategories")
 
   products  Product[]
+  @@index([parentId])
 }
+
 
 
 model Product {

@@ -1,19 +1,22 @@
 "use client";
 
+import { useFetchCategories } from "@/hooks/useFetchCategories";
 import { useState, useEffect } from "react";
 
 export default function AddProductPage() {
-  const [categories, setCategories] = useState([]);
+
   const [preview, setPreview] = useState(null);
   const [image, setImage] = useState(null);
+  const [parentCategoryId, setParentCategoryId] = useState("");
+  const [subCategoryId, setSubCategoryId] = useState("");
+
 
   // Load categories correctly
-  useEffect(() => {
-    fetch("/api/admin/categories/list")
-      .then((res) => res.json())
-      .then(setCategories)
-      .catch(() => setCategories([]));
-  }, []);
+  const { data: categories, isLoading, isError } = useFetchCategories();
+  console.log(categories);
+  if (isLoading) {
+    return <div>Loading.....</div>
+  }
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -40,9 +43,10 @@ export default function AddProductPage() {
       price: e.target.price.value,
       stock: e.target.stock.value,
       description: e.target.description.value,
-      categoryId: e.target.category.value,
+      categoryId: subCategoryId || parentCategoryId, // use subcategory if exists
       images: imageURL ? [imageURL] : [],
     };
+
 
     const res = await fetch("/api/admin/products/create", {
       method: "POST",
@@ -99,9 +103,18 @@ export default function AddProductPage() {
         </div>
 
         {/* CATEGORY */}
+        {/* PARENT CATEGORY */}
         <div>
           <label className="font-medium">Category</label>
-          <select name="category" className="w-full mt-1 border p-2 rounded" required>
+          <select
+            value={parentCategoryId}
+            onChange={(e) => {
+              setParentCategoryId(e.target.value);
+              setSubCategoryId(""); // reset subcategory
+            }}
+            className="w-full mt-1 border p-2 rounded"
+            required
+          >
             <option value="">Select Category</option>
             {categories.map((c) => (
               <option key={c.id} value={c.id}>
@@ -110,6 +123,29 @@ export default function AddProductPage() {
             ))}
           </select>
         </div>
+
+        {/* SUBCATEGORY */}
+        {parentCategoryId && categories.find(c => c.id == parentCategoryId)?.children?.length > 0 && (
+          <div>
+            <label className="font-medium">Subcategory (Optional)</label>
+            <select
+              value={subCategoryId}
+              onChange={(e) => setSubCategoryId(e.target.value)}
+              className="w-full mt-1 border p-2 rounded"
+              required
+            >
+              <option value="">Select Subcategory</option>
+              {categories
+                .find((c) => c.id == parentCategoryId)
+                .children.map((child) => (
+                  <option key={child.id} value={child.id}>
+                    {child.name}
+                  </option>
+                ))}
+            </select>
+          </div>
+        )}
+
 
         {/* PRICE + STOCK */}
         <div className="flex gap-4">

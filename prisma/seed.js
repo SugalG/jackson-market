@@ -19,54 +19,54 @@ async function main() {
   });
 
   // --- Categories ---
-  const categories = [
-    { name: "Fruits", slug: "fruits" },
-    { name: "Vegetables", slug: "vegetables" },
-    { name: "Snacks", slug: "snacks" },
-    { name: "Beverages", slug: "beverages" },
-  ];
+  // const categories = [
+  //   { name: "Fruits", slug: "fruits" },
+  //   { name: "Vegetables", slug: "vegetables" },
+  //   { name: "Snacks", slug: "snacks" },
+  //   { name: "Beverages", slug: "beverages" },
+  // ];
 
-  for (const cat of categories) {
-    await prisma.category.upsert({
-      where: { slug: cat.slug },
-      update: {},
-      create: cat,
-    });
-  }
+  // for (const cat of categories) {
+  //   await prisma.category.upsert({
+  //     where: { slug: cat.slug },
+  //     update: {},
+  //     create: cat,
+  //   });
+  // }
 
-  // --- Example Products ---
-  const products = [
-    {
-      name: "Fresh Apple",
-      slug: "fresh-apple",
-      price: 2.99,
-      description: "Crisp and sweet apples.",
-      images: ["https://res.cloudinary.com/demo/image/upload/v1720000000/apple.jpg"],
-      stock: 100,
-      categorySlug: "fruits",
-    },
+  // // --- Example Products ---
+  // const products = [
+  //   {
+  //     name: "Fresh Apple",
+  //     slug: "fresh-apple",
+  //     price: 2.99,
+  //     description: "Crisp and sweet apples.",
+  //     images: ["https://res.cloudinary.com/demo/image/upload/v1720000000/apple.jpg"],
+  //     stock: 100,
+  //     categorySlug: "fruits",
+  //   },
 
-  ];
+  // ];
 
-  for (const p of products) {
-    const category = await prisma.category.findUnique({
-      where: { slug: p.categorySlug },
-    });
+  // for (const p of products) {
+  //   const category = await prisma.category.findUnique({
+  //     where: { slug: p.categorySlug },
+  //   });
 
-    await prisma.product.upsert({
-      where: { slug: p.slug },
-      update: {},
-      create: {
-        name: p.name,
-        slug: p.slug,
-        price: p.price,
-        description: p.description,
-        images: p.images,
-        stock: p.stock,
-        categoryId: category.id,
-      },
-    });
-  }
+  //   await prisma.product.upsert({
+  //     where: { slug: p.slug },
+  //     update: {},
+  //     create: {
+  //       name: p.name,
+  //       slug: p.slug,
+  //       price: p.price,
+  //       description: p.description,
+  //       images: p.images,
+  //       stock: p.stock,
+  //       categoryId: category.id,
+  //     },
+  //   });
+  // }
 
   console.log("🌱 Seed complete!");
 }

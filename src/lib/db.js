@@ -23,18 +23,29 @@ export async function getProductBySlug(slug) {
 export async function getProductsByCategorySlug(slug) {
   const category = await prisma.category.findUnique({
     where: { slug },
+    include: {
+      children: true,
+    },
   });
 
   if (!category) return [];
 
+  const categoryIds = [
+    category.id,
+    ...category.children.map((child) => child.id),
+  ];
+
   return await prisma.product.findMany({
     where: {
-      categoryId: category.id,
+      categoryId: {
+        in: categoryIds,
+      },
       isDeleted: false,
     },
     include: { category: true },
   });
 }
+
 
 /* -------------------------------------------------- */
 /* CATEGORIES */
@@ -53,4 +64,39 @@ export async function adminGetAllProducts() {
   return await prisma.product.findMany({
     orderBy: { createdAt: "desc" },
   });
+}
+
+export async function getCategoryDataBySlug(slug) {
+  const category = await prisma.category.findUnique({
+    where: { slug },
+    include: {
+      children: {
+        select: {
+          id: true,
+          name: true,
+          slug: true,
+        },
+      },
+    },
+  });
+
+  if (!category) return null;
+
+  const categoryIds = [
+    category.id,
+    ...category.children.map((c) => c.id),
+  ];
+
+  const products = await prisma.product.findMany({
+    where: {
+      categoryId: { in: categoryIds },
+      isDeleted: false,
+    },
+  });
+
+  return {
+    category,
+    children: category.children,
+    products,
+  };
 }

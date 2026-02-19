@@ -2,78 +2,104 @@ import prisma from "@/lib/prisma";
 import { getUser } from "@/lib/auth";
 import { NextResponse } from "next/server";
 
-// -----------------------------
-// GET /api/cart → fetch cart
-// -----------------------------
+/* =========================
+   GET - Fetch Cart
+========================= */
 export async function GET() {
   const user = await getUser();
-  if (!user)
+
+  if (!user) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
 
   const cart = await prisma.cartItem.findMany({
     where: { userId: user.id },
     include: { product: true },
+      orderBy: {
+      id: "asc", 
+    },
   });
 
   return NextResponse.json(cart);
 }
 
-// -----------------------------
-// POST /api/cart → add to cart
-// -----------------------------
+/* =========================
+   POST - Add To Cart
+========================= */
 export async function POST(req) {
   const user = await getUser();
-  if (!user)
+
+  if (!user) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
 
-  const { productId, quantity } = await req.json();
+  const { productId, quantity = 1 } = await req.json();
 
-  if (!productId)
-    return NextResponse.json({ error: "Missing productId" }, { status: 400 });
+  if (!productId) {
+    return NextResponse.json(
+      { error: "Missing productId" },
+      { status: 400 }
+    );
+  }
 
-  const qty = quantity || 1;
-
-  // Check if item already in cart
+  // Check if product already exists in cart
   const existing = await prisma.cartItem.findFirst({
-    where: { userId: user.id, productId },
+    where: {
+      userId: user.id,
+      productId,
+    },
   });
 
+  // If exists → increase quantity
   if (existing) {
-    // Increment quantity
     const updated = await prisma.cartItem.update({
       where: { id: existing.id },
-      data: {
-        quantity: existing.quantity + qty,
-      },
+      data: { quantity: existing.quantity + quantity },
     });
 
     return NextResponse.json(updated);
   }
 
-  // Create new cart item
-  const created = await prisma.cartItem.create({
+  // Otherwise create new cart item
+  const newItem = await prisma.cartItem.create({
     data: {
       userId: user.id,
       productId,
-      quantity: qty,
+      quantity,
     },
   });
 
-  return NextResponse.json(created);
+  return NextResponse.json(newItem);
 }
 
-// -----------------------------
-// PUT /api/cart → update quantity
-// -----------------------------
+
 export async function PUT(req) {
   const user = await getUser();
-  if (!user)
+
+  if (!user) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
 
   const { cartItemId, quantity } = await req.json();
 
-  if (!cartItemId || quantity == null)
-    return NextResponse.json({ error: "Missing fields" }, { status: 400 });
+  if (!cartItemId || quantity == null) {
+    return NextResponse.json(
+      { error: "Missing fields" },
+      { status: 400 }
+    );
+  }
+
+
+  const existing = await prisma.cartItem.findFirst({
+    where: {
+      id: cartItemId,
+      userId: user.id,
+    },
+  });
+
+  if (!existing) {
+    return NextResponse.json({ error: "Not found" }, { status: 404 });
+  }
 
   const updated = await prisma.cartItem.update({
     where: { id: cartItemId },
@@ -83,21 +109,29 @@ export async function PUT(req) {
   return NextResponse.json(updated);
 }
 
-// -----------------------------
-// DELETE /api/cart → remove item
-// -----------------------------
+
 export async function DELETE(req) {
   const user = await getUser();
-  if (!user)
+
+  if (!user) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
 
   const { cartItemId } = await req.json();
 
-  if (!cartItemId)
-    return NextResponse.json({ error: "Missing cartItemId" }, { status: 400 });
+  if (!cartItemId) {
+    return NextResponse.json(
+      { error: "Missing cartItemId" },
+      { status: 400 }
+    );
+  }
 
-  await prisma.cartItem.delete({
-    where: { id: cartItemId },
+
+  await prisma.cartItem.deleteMany({
+    where: {
+      id: cartItemId,
+      userId: user.id,
+    },
   });
 
   return NextResponse.json({ success: true });

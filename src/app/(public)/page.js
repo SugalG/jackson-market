@@ -1,3 +1,4 @@
+import ProductCardMarquee from "@/components/ProductCardMarquee";
 import { getAllProducts, getAllCategories } from "@/lib/db";
 
 export default async function HomePage() {
@@ -6,7 +7,6 @@ export default async function HomePage() {
 
   return (
     <div className="">
-      {/* ✅ HERO SECTION (same content as your recent simple code, design like 1st code) */}
     <section
   className="
     relative
@@ -22,19 +22,19 @@ export default async function HomePage() {
     items-center
   "
 >
-  {/* grid overlay */}
+ 
   <div className="pointer-events-none absolute inset-0 opacity-20">
     <div className="h-full w-full bg-[linear-gradient(90deg,rgba(255,255,255,0.08)_1px,transparent_1px)] bg-[length:28px_28px]" />
   </div>
 
-  {/* top fade */}
+
   <div className="pointer-events-none absolute top-0 left-0 w-full h-40 bg-gradient-to-b from-black/30 to-transparent" />
 
   <div className="relative w-full px-4 sm:px-6 lg:px-12 py-24">
     <div className="mx-auto w-full max-w-7xl py-10">
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
 
-        {/* LEFT TEXT */}
+      
         <div>
         <h1
   className="
@@ -159,7 +159,7 @@ leading-[1.1] md:leading-[1.15]
 
 
      {/* ✅ ABOUT / STORY SECTION */}
-<section
+{/* <section
   className="
     relative
     bg-[#eff5ee]
@@ -171,7 +171,7 @@ leading-[1.1] md:leading-[1.15]
     pb-28
   "
 >
-  {/* LEFT DECOR IMAGE */}
+  
   <img
     src="/uploads/imgleft.webp"
     alt=""
@@ -187,7 +187,7 @@ leading-[1.1] md:leading-[1.15]
     "
   />
 
-  {/* RIGHT DECOR IMAGE */}
+  
   <img
     src="/uploads/imgright.webp"
     alt=""
@@ -204,7 +204,7 @@ leading-[1.1] md:leading-[1.15]
   />
 
   <div className="relative max-w-5xl mx-auto text-center">
-    {/* CENTER IMAGE */}
+    
     <div className="mx-auto mb-14 w-80 md:w-96 lg:w-[26rem]">
       <img
         src="/uploads/imgcenter.webp"
@@ -213,7 +213,7 @@ leading-[1.1] md:leading-[1.15]
       />
     </div>
 
-    {/* TEXT CONTENT */}
+    
     <p
       className="
         font-quicksand
@@ -237,7 +237,7 @@ leading-[1.1] md:leading-[1.15]
       on.
     </p>
 
-    {/* SIGNATURE */}
+    
     <div className="mt-14 font-quicksand">
       <p className="text-xl font-semibold text-[#1f5b3f]">
         Jackson Team
@@ -247,13 +247,14 @@ leading-[1.1] md:leading-[1.15]
       </p>
     </div>
   </div>
-</section>
+</section> */}
+<ProductCardMarquee/>
 
 {/* ✅ POPULAR CATEGORIES – CARD STYLE (MATCH PRODUCTS PAGE) */}
-<section className="px-4 sm:px-6 lg:px-12 py-10 bg-[#eff5ee]">
-  <div className="mx-auto w-full max-w-7xl">
+<section className="px-4 sm:px-6 lg:px-12 py-10">
+  <div className="mx-auto w-full">
 
-    <div className="bg-white rounded-3xl shadow-sm border border-[#1f5b3f]/10 p-8">
+    <div className="">
 
       {/* HEADER */}
       <div className="flex items-center gap-4 mb-8">
@@ -276,9 +277,9 @@ leading-[1.1] md:leading-[1.15]
    {/* CATEGORY ROW */}
 <div
   className="
-    grid grid-cols-2 gap-6
+    grid grid-cols-2 gap-8
     sm:grid-cols-3
-    md:flex md:gap-8 md:overflow-x-auto md:pb-2
+    md:flex md:gap-10 md:overflow-x-auto md:pb-2
     [scrollbar-width:none]
     md:[&::-webkit-scrollbar]:hidden
   "
@@ -291,41 +292,59 @@ leading-[1.1] md:leading-[1.15]
         group
         flex flex-col items-center text-center
         transition
-        md:min-w-[160px]
+        md:min-w-[180px]
       "
     >
+      {/* Circle Background */}
       <div
         className="
-          h-24 w-24
+          relative
+          h-36 w-36
           rounded-full
-          bg-[#f8fbf7]
-          border border-[#1f5b3f]/20
-          shadow-sm
           flex items-center justify-center
-          group-hover:shadow-md
-          group-hover:-translate-y-1
-          transition
+          shadow-lg
+          group-hover:scale-105
+          transition duration-300
+           bg-gradient-to-r
+    from-[#0b3b25]
+    via-[#0a4729]
+    to-[#0b3b25]
         "
       >
         <img
-          src={c.image || '/placeholder.png'}
+          src={c.image || "/placeholder.png"}
           alt={c.name}
-          className="h-14 w-14 object-contain"
+          className="
+            h-24 w-24
+            object-contain
+            drop-shadow-2xl
+          "
         />
       </div>
 
-      <p className="mt-4 font-quicksand text-base font-semibold text-gray-900 group-hover:text-[#1f5b3f] transition">
+      {/* Title */}
+      <p className="
+        mt-6
+        font-quicksand
+        text-lg
+        font-semibold
+        text-black
+        group-hover:text-purple-700
+        transition
+      ">
         {c.name}
       </p>
 
+      {/* Optional Product Count */}
       {(c.productCount ?? c.productsCount ?? c._count?.products) != null && (
-        <p className="mt-1 font-quicksand text-sm text-gray-500">
+        <p className="mt-1 text-sm text-gray-500">
           {c.productCount ?? c.productsCount ?? c._count?.products} Products
         </p>
       )}
     </a>
   ))}
 </div>
+
 
 
     </div>
@@ -386,7 +405,7 @@ leading-[1.1] md:leading-[1.15]
       {/* CONTENT */}
       {products.length === 0 ? (
         <div className="rounded-2xl bg-[#eff5ee] p-6 text-sm font-quicksand text-gray-600">
-          No products found. Add some from the Admin panel.
+          No products found.
         </div>
       ) : (
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6">

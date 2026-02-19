@@ -2,6 +2,8 @@ import "./globals.css";
 import Navbar from "@/components/navbar";
 import Footer from "@/components/footer";
 import { getUser, getAdmin } from "@/lib/auth";
+import NavbarTest from "@/components/NavbarTest";
+import Providers from "./providers";
 
 export const metadata = {
   title: "Jackson Market",
@@ -15,11 +17,14 @@ export default async function RootLayout({ children }) {
   return (
     <html lang="en">
       <body className="bg-[#eff5ee] min-h-screen flex flex-col">
-        <Navbar user={user} />
-        <main className="flex-1 mx-auto w-full ">
-          {children}
-        </main>
-        <Footer />
+        <Providers>
+          <NavbarTest user={user} />
+          <main className="flex-1 mx-auto w-full ">
+            {children}
+          </main>
+          <Footer />
+
+        </Providers>
       </body>
     </html>
   );

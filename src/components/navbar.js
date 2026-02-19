@@ -2,6 +2,7 @@
 
 import { ShoppingCart, Menu, X } from "lucide-react";
 import { useEffect, useState } from "react";
+import MainHeader from "./MainNavbar";
 
 export default function Navbar({ user }) {
   const links = [
@@ -304,6 +305,7 @@ export default function Navbar({ user }) {
           </div>
         )}
       </div>
+      {/* <MainHeader/> */}
     </header>
   );
 }

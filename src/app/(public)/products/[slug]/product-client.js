@@ -10,10 +10,21 @@ import {
   Minus,
   Plus,
 } from "lucide-react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 export default function ProductClient({ product }) {
-  const [adding, setAdding] = useState(false);
+ 
   const [qty, setQty] = useState(1);
+  const queryClient = useQueryClient();
+
+  const {mutate, isPending} = useMutation({
+    mutationFn:addToCart,
+    onSuccess:() => {
+      queryClient.invalidateQueries({
+        queryKey:["cart-count"]
+      })
+    }
+  })
 
   function increaseQty() {
     setQty((q) => q + 1);
@@ -24,7 +35,6 @@ export default function ProductClient({ product }) {
   }
 
   async function addToCart() {
-    setAdding(true);
 
     const res = await fetch("/api/cart", {
       method: "POST",
@@ -32,8 +42,6 @@ export default function ProductClient({ product }) {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ productId: product.id, quantity: qty }),
     });
-
-    setAdding(false);
 
     if (res.ok) alert("Added to cart!");
     else alert("Could not add to cart. Please login.");
@@ -156,8 +164,10 @@ export default function ProductClient({ product }) {
 
               {/* Add to cart */}
               <button
-                onClick={addToCart}
-                disabled={adding}
+                onClick={() => {
+                  mutate();
+                }}
+                disabled={isPending}
                 className={`
                   w-full sm:flex-1
                   rounded-2xl
@@ -169,10 +179,10 @@ export default function ProductClient({ product }) {
                   hover:bg-[#234e35]
                   active:scale-[0.99]
                   transition
-                  ${adding ? "opacity-70 cursor-not-allowed" : ""}
+                  ${isPending ? "opacity-70 cursor-not-allowed" : ""}
                 `}
               >
-                {adding ? "Adding..." : "Add to Cart"}
+                {isPending ? "Adding..." : "Add to Cart"}
               </button>
             </div>
 
