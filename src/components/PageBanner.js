@@ -38,7 +38,7 @@ export default function PageBanner({
 
             {/* BREADCRUMB */}
             <div className="mt-3 flex items-center gap-3 text-white/85 text-sm">
-              <a href="/" className="hover:text-white transition font-medium">
+              <a href="/admin" className="hover:text-white transition font-medium">
                 {breadcrumbBase}
               </a>
               <span className="opacity-60">/</span>

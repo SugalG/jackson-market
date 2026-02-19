@@ -11,18 +11,17 @@ export const metadata = {
 };
 
 export default async function RootLayout({ children }) {
-  const admin = await getAdmin();
-  const user = admin || (await getUser()); // 🔥 admin first, then user
+  // const admin = await getAdmin();
+  const user = await getUser(); // 🔥 admin first, then user
 
   return (
     <html lang="en">
       <body className="bg-[#eff5ee] min-h-screen flex flex-col">
         <Providers>
-          <NavbarTest user={user} />
           <main className="flex-1 mx-auto w-full ">
             {children}
           </main>
-          <Footer />
+        
 
         </Providers>
       </body>

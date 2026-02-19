@@ -1,4 +1,4 @@
-import PageBanner from "../PageBanner";
+import PageBanner from "../../../components/PageBanner";
 import {
   getAllProducts,
   getProductsByCategorySlug,

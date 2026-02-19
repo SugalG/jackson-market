@@ -1,6 +1,6 @@
 "use client";
 
-import PageBanner from "../PageBanner";
+import PageBanner from "../../../components/PageBanner";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Minus, Plus, Trash2, ShoppingBag, ArrowRight } from "lucide-react";

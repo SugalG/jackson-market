@@ -1,4 +1,4 @@
-import PageBanner from "@/app/(public)/PageBanner";
+import PageBanner from "@/components/PageBanner";
 import { headers } from "next/headers";
 import Link from "next/link";
 import DeleteProductButton from "@/components/admin/DeleteProductButton";

@@ -1,4 +1,4 @@
-import PageBanner from "@/app/(public)/PageBanner";
+import PageBanner from "@/components/PageBanner";
 
 export default function AdminDashboard() {
   return (

@@ -1,4 +1,4 @@
-import PageBanner from "../../PageBanner";
+import PageBanner from "../../../../components/PageBanner";
 import { getProductBySlug } from "@/lib/db";
 import ProductClient from "./product-client";
 

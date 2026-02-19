@@ -1,6 +1,6 @@
 "use client";
 
-import PageBanner from "../PageBanner";
+import PageBanner from "../../../components/PageBanner";
 import { useState } from "react";
 import Link from "next/link";
 

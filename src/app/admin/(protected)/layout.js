@@ -6,7 +6,7 @@ export default async function AdminLayout({ children }) {
 
   // 🔒 HARD BLOCK RENDER
   if (!admin || admin.role !== "ADMIN") {
-    redirect("/admin-login");
+    redirect("/admin/login");
   }
 
   return (

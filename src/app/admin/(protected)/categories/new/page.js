@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import PageBanner from "@/app/(public)/PageBanner";
+import PageBanner from "@/components/PageBanner";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { fetchParentCategories } from "@/actions/fetchParentCategory";
 

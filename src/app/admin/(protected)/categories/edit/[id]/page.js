@@ -1,6 +1,6 @@
 import prisma from "@/lib/prisma";
 import EditCategoryForm from "@/components/admin/EditCategoryForm";
-import PageBanner from "@/app/(public)/PageBanner";
+import PageBanner from "@/components/PageBanner";
 
 export default async function EditCategoryPage({ params }) {
   const { id } = params;

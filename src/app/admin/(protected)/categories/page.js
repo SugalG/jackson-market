@@ -3,7 +3,7 @@ import prisma from "@/lib/prisma";
 import { getAdmin } from "@/lib/auth";
 import DeleteCategoryButton from "@/components/admin/DeleteCategoryButton";
 import { redirect } from "next/navigation";
-import PageBanner from "@/app/(public)/PageBanner";
+import PageBanner from "@/components/PageBanner";
 
 export default async function AdminCategoriesPage() {
   const admin = await getAdmin();
