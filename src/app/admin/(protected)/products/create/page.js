@@ -13,7 +13,7 @@ export default function AddProductPage() {
 
   // Load categories correctly
   const { data: categories, isLoading, isError } = useFetchCategories();
-  console.log(categories);
+
   if (isLoading) {
     return <div>Loading.....</div>
   }

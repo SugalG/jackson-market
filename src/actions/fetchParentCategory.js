@@ -17,7 +17,8 @@ export async function fetchParentCategories(){
     }catch(e){
         console.error(e);
         return {
-            success: false
+            success: false,
+            result:[]
         }
     }
 }

@@ -12,6 +12,8 @@ export default function EditProductForm({ product, categories }) {
   const [stock, setStock] = useState(product.stock ?? 0);
   const [description, setDescription] = useState(product.description || "");
   const [categoryId, setCategoryId] = useState(product.categoryId ?? "");
+  const [parentCategoryId, setParentCategoryId] = useState(product.categoryId ?? "");
+  const [subCategoryId, setSubCategoryId] = useState("");
 
   // image
   const [preview, setPreview] = useState(product.images?.[0] || null);
@@ -223,6 +225,27 @@ export default function EditProductForm({ product, categories }) {
           ))}
         </select>
       </div>
+
+       {parentCategoryId && categories.find(c => c.id == parentCategoryId)?.children?.length > 0 && (
+          <div>
+            <label className="font-medium">Subcategory (Optional)</label>
+            <select
+              value={subCategoryId}
+              onChange={(e) => setSubCategoryId(e.target.value)}
+              className="w-full mt-1 border p-2 rounded"
+              required
+            >
+              <option value="">Select Subcategory</option>
+              {categories
+                .find((c) => c.id == parentCategoryId)
+                .children.map((child) => (
+                  <option key={child.id} value={child.id}>
+                    {child.name}
+                  </option>
+                ))}
+            </select>
+          </div>
+        )}
 
       {/* Price + Stock */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">

@@ -1,5 +1,6 @@
 import prisma from "@/lib/prisma";
 import EditProductForm from "./EditProductForm";
+import { fetchParentCategories } from "@/actions/fetchParentCategory";
 
 export default async function EditProductPage(props) {
   const params = await props.params;  // ✅ FIX
@@ -10,7 +11,8 @@ export default async function EditProductPage(props) {
     include: { category: true },
   });
 
-  const categories = await prisma.category.findMany();
+  const {result:categories} = await fetchParentCategories();
+  
 
   if (!product) {
     return <div className="p-6">Product not found.</div>;
@@ -23,3 +25,8 @@ export default async function EditProductPage(props) {
     </div>
   );
 }
+
+
+
+
+
